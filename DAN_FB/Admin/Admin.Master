@@ -1,0 +1,100 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Admin.master.cs" Inherits="DAN_FB.Admin.Admin" %>
+
+<!DOCTYPE html>
+
+<html>
+<head runat="server">
+    <title><asp:ContentPlaceHolder ID="TitleContent" runat="server">Trang Quản Trị</asp:ContentPlaceHolder></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="~\css\admin.css" rel="stylesheet" />
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <asp:ScriptManager ID="ScriptManager1" runat="server" />
+
+        <aside class="sidebar" id="sidebar">
+            <h2><i class="fas fa-mobile-alt"></i> Quản Lý Điện Thoại</h2>
+            <nav class="sidebar-nav">
+                <a href="<%= this.ResolveUrl("~/Admin/BangDieuKhien.aspx") %>"><i class="fas fa-tachometer-alt fa-fw"></i> Bảng Điều Khiển</a>
+                <a href="<%= this.ResolveUrl("~/Admin/QuanLyDienThoai.aspx") %>"><i class="fas fa-mobile fa-fw"></i> Quản Lý Điện Thoại</a>
+                <a href="<%= this.ResolveUrl("~/Admin/QuanLyDonHang.aspx") %>"><i class="fas fa-shopping-cart fa-fw"></i> Quản Lý Đơn Hàng</a>
+                <a href="<%= this.ResolveUrl("~/Admin/QuanLyKhachHang.aspx") %>"><i class="fas fa-users fa-fw"></i> Quản Lý Khách Hàng</a>
+                <a href="<%= this.ResolveUrl("~/Admin/QuanLyDanhGia.aspx") %>"><i class="fas fa-comments fa-fw"></i> Quản Lý Đánh Giá</a>
+                <a href="<%= this.ResolveUrl("~/Admin/QuanLyKhuyenMai.aspx") %>"><i class="fas fa-chart-line fa-fw"></i> Quản lý khuyến mãi</a>
+                <a href="<%= this.ResolveUrl("~/Admin/ThongKeSanPham.aspx") %>"><i class="fas fa-chart-bar fa-fw"></i> Thống Kê Sản Phẩm</a>
+            </nav>
+            
+            <asp:LinkButton ID="btnLogout" runat="server" CssClass="logout-btn" OnClientClick="showLogoutModal(); return false;">
+                <i class="fas fa-sign-out-alt"></i> Đăng Xuất
+            </asp:LinkButton>
+        </aside>
+
+        <main class="admin-main-wrapper" id="mainWrapper">
+            <%-- Nội dung chính của các trang con sẽ được hiển thị ở đây --%>
+            <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+            </asp:ContentPlaceHolder>
+        </main>
+        
+        <div id="logoutModal" class="modal">
+            <div class="modal-content">
+                <h3>Xác nhận đăng xuất</h3>
+                <p>Bạn có chắc chắn muốn đăng xuất khỏi hệ thống không?</p>
+                <div class="modal-buttons">
+                    <asp:LinkButton ID="confirmLogoutLinkBtn" runat="server" CssClass="btn-confirm" OnClick="confirmLogoutLinkBtn_Click">Đăng xuất</asp:LinkButton>
+                    <button type="button" class="btn-cancel" id="cancelLogoutModalBtn">Hủy</button>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            document.addEventListener('DOMContentLoaded', function () {
+                const sidebar = document.getElementById('sidebar');
+                const mainWrapper = document.getElementById('mainWrapper');
+                const logoutModal = document.getElementById('logoutModal');
+                const cancelLogoutModalBtn = document.getElementById('cancelLogoutModalBtn');
+       
+                function toggleMobileSidebar() { sidebar.classList.toggle('show'); }
+                function showLogoutModal() { if (logoutModal) logoutModal.style.display = 'flex'; }
+                function hideLogoutModal() { if (logoutModal) logoutModal.style.display = 'none'; }
+
+                function highlightActiveMenu() {
+                    let currentPath = window.location.pathname.split('/').pop().toLowerCase();
+                    if (!currentPath || currentPath === 'default.aspx') { currentPath = "bangdieukhien.aspx"; }
+                    const sidebarLinks = document.querySelectorAll('.sidebar-nav a');
+                    sidebarLinks.forEach(link => {
+                        const linkPage = link.getAttribute('href').split('/').pop().toLowerCase();
+                        link.classList.toggle('active', linkPage === currentPath);
+                    });
+                }
+
+                function handleResize() {
+                    if (window.innerWidth > 768) {
+                        sidebar.classList.remove('show');
+                        
+                    } else {
+                        sidebar.classList.remove('collapsed');
+                        mainWrapper.classList.remove('expanded');
+                        
+                    }
+                }
+
+                document.addEventListener('click', e => {
+                    if (window.innerWidth <= 768 && sidebar.classList.contains('show') && !sidebar.contains(e.target)) {
+                        sidebar.classList.remove('show');
+                    }
+                });
+
+                window.addEventListener('resize', handleResize);
+                if (cancelLogoutModalBtn) cancelLogoutModalBtn.addEventListener('click', hideLogoutModal);
+                if (logoutModal) logoutModal.addEventListener('click', e => { if (e.target === logoutModal) hideLogoutModal(); });
+
+                highlightActiveMenu();
+                handleResize();
+                window.showLogoutModal = showLogoutModal;
+            });
+        </script>
+    </form>
+</body>
+</html>

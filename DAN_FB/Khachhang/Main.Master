@@ -1,0 +1,475 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Main.master.cs" Inherits="DAN_FB.Main" %>
+
+<!DOCTYPE html>
+<html lang="vi">
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mobile Shop - Cửa hàng điện thoại hàng đầu</title>
+    <%-- Đường dẫn CSS tĩnh, nếu có file site.css --%>
+    <link rel="stylesheet" href="css/site.css" />
+    <%-- Font Awesome CDN --%>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <%-- Google Fonts: Inter --%>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        /* Biến CSS */
+        :root {
+            --primary-color: #2563eb; /* Có thể đổi màu này nếu muốn tông xanh khác */
+            --primary-hover: #1d4ed8;
+            --accent-color: #f59e0b; /* Màu vàng cam */
+            --background-light: #f8fafc;
+            --background-white: #ffffff; /* Sẽ không dùng cho header nữa */
+            --text-primary: #1e293b; /* Màu chữ đen xám chính */
+            --text-secondary: #64748b; /* Màu chữ xám phụ */
+            --header-background: #456BBF; /* Biến mới cho màu nền header */
+            --header-text-light: #ffffff; /* Màu chữ sáng trên header */
+            --header-text-lighter: #e0e7ff; /* Màu chữ nhạt hơn cho trạng thái hover/inactive trên header */
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --border-radius-sm: 8px;
+            --border-radius-md: 12px;
+            --border-radius-lg: 25px; /* Dùng cho search input */
+        }
+
+        /* Reset và Typography */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc; /* Màu nền toàn trang */
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* Header */
+        .main-header {
+            background: var(--header-background); /* Đổi màu nền header */
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Viền dưới nhạt màu */
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 80px;
+            gap: 24px;
+            color: var(--header-text-light); /* Màu chữ mặc định cho header */
+        }
+
+        /* Logo */
+        .logo a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--header-text-light); /* Logo chữ màu sáng */
+            font-weight: 700;
+            font-size: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .logo a:hover {
+            opacity: 0.9;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2); /* Icon nền trong suốt hoặc màu nhạt hơn */
+            border-radius: var(--border-radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--header-text-light); /* Icon màu sáng */
+            font-size: 1.2rem;
+        }
+
+        /* Navigation */
+        .main-nav {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .nav-link {
+            padding: 10px 18px;
+            color: var(--header-text-lighter); /* Link nav mặc định nhạt hơn */
+            font-weight: 500;
+            border-radius: var(--border-radius-sm);
+            transition: var(--transition);
+            white-space: nowrap;
+            font-size: 0.95rem;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--header-text-light); /* Link nav hover/active sáng hơn */
+            background: rgba(255, 255, 255, 0.15); /* Nền hover/active nhạt */
+            transform: translateY(-1px);
+        }
+
+        /* Search Bar */
+        .search-container {
+            position: relative;
+            width: 300px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            border: 1px solid rgba(255, 255, 255, 0.3); /* Border màu nhạt hơn */
+            border-radius: var(--border-radius-lg);
+            background: rgba(255, 255, 255, 0.1); /* Nền input trong suốt nhạt */
+            font-size: 0.9rem;
+            outline: none;
+            transition: var(--transition);
+            color: var(--header-text-light); /* Màu chữ input */
+        }
+
+        .search-input::placeholder {
+            color: var(--header-text-lighter); /* Màu placeholder nhạt hơn */
+            opacity: 0.8;
+        }
+
+        .search-input:focus {
+            border-color: var(--header-text-light); /* Border focus sáng hơn */
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2); /* Shadow focus */
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--header-text-lighter); /* Icon search màu nhạt hơn */
+            pointer-events: none;
+        }
+
+        /* User Actions */
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .action-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: var(--border-radius-sm);
+            background: rgba(255, 255, 255, 0.1); /* Nền button trong suốt nhạt */
+            border: 1px solid rgba(255, 255, 255, 0.3); /* Border button */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--header-text-light); /* Icon button màu sáng */
+            transition: var(--transition);
+            position: relative;
+            font-size: 1.1rem;
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.25); /* Nền button hover sáng hơn */
+            color: var(--header-text-light);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--accent-color); /* Giữ màu accent cũ để nổi bật */
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border-radius: var(--border-radius-sm);
+            background: rgba(255, 255, 255, 0.1); /* Nền user profile trong suốt nhạt */
+            border: 1px solid rgba(255, 255, 255, 0.3); /* Border user profile */
+            color: var(--header-text-light); /* Màu chữ user profile */
+            transition: var(--transition);
+        }
+
+        .user-profile:hover {
+            background: rgba(255, 255, 255, 0.25); /* Nền user profile hover sáng hơn */
+            color: var(--header-text-light);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .user-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: var(--border-radius-sm);
+            background: rgba(255, 255, 255, 0.2); /* Nền avatar trong suốt nhạt */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--header-text-light); /* Icon avatar màu sáng */
+            font-size: 1rem;
+        }
+        
+        .user-profile span {
+            display: block; 
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 32px 24px;
+            min-height: calc(100vh - 80px);
+            /* Có thể thêm màu nền trắng hoặc màu khác cho nội dung chính nếu muốn */
+            /* background-color: var(--background-white); */ 
+            /* border-radius: var(--border-radius-md); */
+            /* box-shadow: var(--shadow-md); */
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .header-container {
+                flex-wrap: wrap;
+                height: auto;
+                padding: 16px 24px;
+                gap: 16px;
+            }
+
+            .logo {
+                flex-grow: 1;
+            }
+
+            .main-nav {
+                order: 3;
+                flex-basis: 100%;
+                justify-content: flex-start;
+                overflow-x: auto;
+                white-space: nowrap;
+                padding-top: 12px;
+                border-top: 1px solid rgba(255, 255, 255, 0.2); /* Border top nhạt hơn */
+            }
+            
+            .nav-link {
+                font-size: 0.9rem;
+                padding: 8px 14px;
+            }
+
+            .search-container {
+                width: calc(100% - 100px);
+                order: 2;
+            }
+
+            .user-actions {
+                order: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-container {
+                padding: 12px 16px;
+                gap: 12px;
+            }
+
+            .logo a {
+                font-size: 1.2rem;
+            }
+
+            .logo-icon {
+                width: 36px;
+                height: 36px;
+            }
+
+            .main-nav {
+                padding-top: 8px;
+                gap: 6px;
+            }
+
+            .nav-link {
+                font-size: 0.85rem;
+                padding: 6px 10px;
+            }
+
+            .search-container {
+                width: 100%;
+            }
+            .search-input {
+                font-size: 0.85rem;
+                padding: 8px 12px 8px 36px;
+            }
+            .search-icon {
+                left: 12px;
+            }
+
+            .action-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+
+            .cart-badge {
+                width: 16px;
+                height: 16px;
+                font-size: 0.65rem;
+            }
+
+            .user-profile {
+                padding: 4px 8px;
+            }
+            .user-profile span {
+                display: none;
+            }
+            .user-avatar {
+                width: 28px;
+                height: 28px;
+                font-size: 0.9rem;
+            }
+
+            .main-content {
+                padding: 20px 16px;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .main-header {
+            animation: slideDown 0.4s ease-out;
+        }
+    </style>
+    <asp:ContentPlaceHolder ID="head" runat="server" />
+</head>
+<body>
+    <form id="form1" runat="server">
+        <header class="main-header">
+            <div class="header-container">
+                <div class="logo">
+                    <a href="WebForm1.aspx">
+                        <div class="logo-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <span>Mobile Shop</span>
+                    </a>
+                </div>
+
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <asp:TextBox ID="txtSearch" runat="server"
+                                 CssClass="search-input"
+                                 placeholder="Tìm kiếm..." />
+                    <asp:Button ID="btnSearch" runat="server"
+                                CssClass="search-btn"
+                                Text="Tìm"
+                                OnClick="btnSearch_Click" Style="display: none;" />
+                </div>
+
+                <div class="user-actions">
+                    <a href="GioHang.aspx" class="action-btn" title="Giỏ hàng">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-badge">3</span>
+                    </a>
+                    <a href="#" class="action-btn" title="Yêu thích">
+                        <i class="fas fa-heart"></i>
+                    </a>
+                    <a href="ThongTinNguoiDung.aspx" class="user-profile" title="Tài khoản">
+                        <div class="user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <span>Tài khoản</span>
+                    </a>
+                </div>
+
+                <nav class="main-nav">
+                    <a href="WebForm1.aspx" class="nav-link active">Trang chủ</a>
+                    <a href="#" class="nav-link">Sản phẩm</a>
+                    <a href="#" class="nav-link">Khuyến mãi</a>
+                    <a href="#" class="nav-link">Tin tức</a>
+                    <a href="#" class="nav-link">Liên hệ</a>
+                </nav>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server" />
+        </main>
+    </form>
+
+    <script>
+        // Highlight active navigation link
+        document.addEventListener('DOMContentLoaded', function () {
+            const currentPath = window.location.pathname.split('/').pop().toLowerCase();
+            document.querySelectorAll('.main-nav .nav-link').forEach(link => {
+                const linkPath = link.getAttribute('href').split('/').pop().toLowerCase();
+                if (linkPath === currentPath || (currentPath === '' && linkPath === 'webform1.aspx')) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+        });
+
+        // Search input enhancement (kept for visual feedback)
+        const searchInput = document.querySelector('.search-input');
+        searchInput?.addEventListener('focus', function () {
+            this.style.boxShadow = '0 0 0 3px rgba(255, 255, 255, 0.2)'; // Shadow trắng trên nền đậm
+        });
+
+        searchInput?.addEventListener('blur', function () {
+            this.style.boxShadow = 'none';
+        });
+
+        // Smooth transition effect for nav links (visual only)
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function (e) {
+                this.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 150);
+            });
+        });
+    </script>
+</body>
+</html>
